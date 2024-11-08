@@ -1,9 +1,10 @@
 import EPoint from "../jzCesium/entityClass/point";
 
-type cameraOption = {
+export type cameraOption = {
     lon: number,
     lat: number,
     alt?: number,
+    entity?:any
     /**
      * 翻转角
      */
@@ -22,18 +23,18 @@ export default interface viewer {
      */
     jzPrimitives: object,
     /**
-     * 用于定位默认视角的几何实体
-     */
-    homePositionEntity: EPoint,
-    /**
      * 默认视角的位置信息
      * 
      * [lon,lat,alt,pitch,duration,head]:经度、纬度、高度、翻转角、飞跃时长、俯仰角
      */
-    homePosition: number[],
+    homePosition?: number[],
     /**
      * 回到默认的视角
      */
     flyToHome(): void
-    flyToPosition(option:cameraOption):void
+    /**
+     * 定位到指定的视角
+     * @param option 包括经度、纬度、高度、翻转角、飞跃时长，俯仰角
+     */
+    flyToPosition(option?:cameraOption):void
 }

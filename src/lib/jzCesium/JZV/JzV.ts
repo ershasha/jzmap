@@ -1,12 +1,15 @@
 import * as cesium from 'cesium';
 
 import EPoint from '../entityClass/point';
+import viewer from '../../interface/viewer';
+import { cameraOption } from '../../interface/viewer'
+import * as mapUtils from '../utils';
 
 
 
-export default class JzV extends cesium.Viewer {
+export default class JzV extends cesium.Viewer implements viewer {
   // 类的静态变量，初始位置
-  static hometoPositionEntity: EPoint;
+  static homePositionEntity: EPoint;
 
   jzPrimitives: any = {};// 自定义基元的集合
   _homePosition: number[] = [113, 32, 8000000, -90, 3, 0];//相机的初始位置
@@ -24,7 +27,7 @@ export default class JzV extends cesium.Viewer {
       baseLayerPicker: false, // 图层选择器
       geocoder: false, // 位置查找工具
       fullscreenButton: false, // 全屏按钮
-      baseLayer: cesium.ImageryLayer.fromProviderAsync(cesium.SingleTileImageryProvider.fromUrl(new URL('../../assets/img/default.jpg', import.meta.url).href), {}), // 自定义基础图层
+      baseLayer: cesium.ImageryLayer.fromProviderAsync(cesium.SingleTileImageryProvider.fromUrl(new URL('../../img/default.jpg', import.meta.url).href), {}), // 自定义基础图层
     };
     super(dom, propOptions);
     /**
@@ -48,31 +51,33 @@ export default class JzV extends cesium.Viewer {
     };
     // 设置定位元素,并进行渲染
     let ep = new EPoint([this._homePosition[0], this._homePosition[1]], { pixelSize: 0.1, color: 'white' });
-
-    JzV.hometoPositionEntity = ep;
+    JzV.homePositionEntity = ep;
     ep.addTo(this.entities);
-    console.log(ep);
+    // 定位到默认的视角
     this.flyToHome();
     // 隐藏cesium商标
     this.creditDisplay.container.style.display = "None";
   }
-  /**
-   * 定位到相机初始位置
-   * @param pitch 相机偏角
-   * @param duration 动画时长
-   * @param head 相机仰角
-   */
-  flyToHome(pitch?: number, duration?: number, head?: number) { // 确保定位entity点在地球表面，即可使得定位经度和纬度在视角中心
-    this.flyTo(JzV.hometoPositionEntity.point, {
-      duration: duration ? duration : this._homePosition[4],
+  flyToHome() { // 确保定位entity点在地球表面，即可使得定位经度和纬度在视角中心
+    this.flyTo(JzV.homePositionEntity.point, {
+      duration: this._homePosition[4],
       offset: new cesium.HeadingPitchRange(
-        head ? head : this._homePosition[5],
-        cesium.Math.toRadians(pitch ? pitch : this._homePosition[3]),
+        this._homePosition[5],
+        cesium.Math.toRadians(this._homePosition[3]),
         this._homePosition[2]
       ),
     })
   }
-
+  flyToPosition(option: cameraOption) {
+    this.flyTo(option.entity, {
+      duration: option.duration ? option.duration  : this._homePosition[4],
+      offset: new cesium.HeadingPitchRange(
+        option.head ? option.head : this._homePosition[5],
+        cesium.Math.toRadians(option.pitch ? option.pitch : this._homePosition[3]),
+        this._homePosition[2]
+      ),
+    })
+  }
 
   /***************************************************动态设置相关参数 */
   set homePosition(val) {
@@ -81,7 +86,7 @@ export default class JzV extends cesium.Viewer {
       this._homePosition[index] = el;
     })
     // 重新定位
-    JzV.hometoPositionEntity.updataPosition([this._homePosition[0], this._homePosition[1]])
+    JzV.homePositionEntity.updatePosition([this._homePosition[0], this._homePosition[1]])
     this.flyToHome();
   }
   get homePosition() {

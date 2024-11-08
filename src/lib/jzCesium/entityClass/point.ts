@@ -1,27 +1,32 @@
 import * as cesium from 'cesium';
 import { v4 } from "uuid";
-// import {entityAttr} from '../../type/entityAttr'
-import { epoint, epointInterFace } from '../../type/entity/point'
+
+import { point } from '../../interface/entity/base';
+import { pointItem } from '../../interface/entity/point';
 
 /**
  * @description: cesium中的entity点
  * @Author: songdengqiang
  * @Date: 2024-10-28 11:21:04
  */
-export default class EPoint implements epointInterFace {
-  id: string;
-  position: { input: number[]; cartesian3: cesium.Cartesian3; };
-  entityCollection?: cesium.EntityCollection | undefined;
+export default class EPoint implements pointItem {
+  id = v4();
+  position: {
+    input: number[],
+    cartesian3: cesium.Cartesian3
+  };
+  entityCollection: any;
   point: any;
-  constructor(positions: number[], attr?: epoint) {
-    this.id = v4();
+  constructor(position: number[], attr?: point) {
     // 初始化参数
+    attr && attr.id ? this.id = attr.id : null;
     this.position = {
-      input: positions,
-      cartesian3: cesium.Cartesian3.fromDegrees(positions[0],
-        positions[1],
-        positions[2] ? positions[2] : 0)
+      input: position,
+      cartesian3: cesium.Cartesian3.fromDegrees(position[0],
+        position[1],
+        position[2] ? position[2] : 0)
     }
+    // 点的配置信息
     // 点的配置信息
     this.point = {
       position: this.position.cartesian3,
@@ -32,8 +37,10 @@ export default class EPoint implements epointInterFace {
       },
     };
     // 补充相关配置信息
-    attr && attr.color ? this.point.point.color = cesium.Color.fromCssColorString(attr.color) : null;
-    attr && attr.outlineColor ? this.point.point.outlineColor = cesium.Color.fromCssColorString(attr.outlineColor) : null;
+    if (!attr) return;
+    attr.color ? this.point.point.color = cesium.Color.fromCssColorString(attr.color) : null;
+    attr.outlineColor ? this.point.point.outlineColor = cesium.Color.fromCssColorString(attr.outlineColor) : null;
+    attr.outlineWidth ? this.point.outlineWidth = attr.outlineWidth : null;
   }
   /**
    * 将点对象进行渲染

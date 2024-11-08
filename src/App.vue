@@ -1,28 +1,21 @@
 <template>
-  <div>
+  <div class="map" id="mapContainer">
 
   </div>
 </template>
 <script setup lang="ts">
 import { onMounted } from 'vue'
 
-onMounted(()=>{
-  console.log('object');
+import jzmap from './lib/index';
+
+onMounted(() => {
+  let viewer = new jzmap.JzV('mapContainer');
+  console.log(viewer);
 })
 </script>
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+<style scoped lang="scss">
+.map {
+  width: 100%;
+  height: 100%;
 }
 </style>
