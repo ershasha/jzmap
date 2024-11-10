@@ -1,5 +1,3 @@
-import EPoint from "../jzCesium/entityClass/point";
-
 export type cameraOption = {
     lon: number,
     lat: number,
@@ -34,7 +32,7 @@ export default interface viewer {
     flyToHome(): void
     /**
      * 定位到指定的视角
-     * @param option 包括经度、纬度、高度、翻转角、飞跃时长，俯仰角
+     * @param option 包括entity对象、翻转角、飞跃时长，俯仰角
      */
     flyToPosition(option?:cameraOption):void
 }

@@ -59,7 +59,7 @@ export default class JzV extends cesium.Viewer implements viewer {
     this.creditDisplay.container.style.display = "None";
   }
   flyToHome() { // 确保定位entity点在地球表面，即可使得定位经度和纬度在视角中心
-    this.flyTo(JzV.homePositionEntity.point, {
+    this.flyTo(JzV.homePositionEntity.entity, {
       duration: this._homePosition[4],
       offset: new cesium.HeadingPitchRange(
         this._homePosition[5],

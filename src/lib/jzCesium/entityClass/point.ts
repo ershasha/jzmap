@@ -1,34 +1,21 @@
 import * as cesium from 'cesium';
-import { v4 } from "uuid";
 
 import { point } from '../../interface/entity/base';
-import { pointItem } from '../../interface/entity/point';
+import { BaseEntity } from '../../class/entity';
 
 /**
  * @description: cesium中的entity点
  * @Author: songdengqiang
  * @Date: 2024-10-28 11:21:04
  */
-export default class EPoint implements pointItem {
-  id = v4();
-  position: {
-    input: number[],
-    cartesian3: cesium.Cartesian3
-  };
-  entityCollection: any;
-  point: any;
+export default class EPoint extends BaseEntity {
+
   constructor(position: number[], attr?: point) {
-    // 初始化参数
+    super(position);
+    // 初始化标识参数
     attr && attr.id ? this.id = attr.id : null;
-    this.position = {
-      input: position,
-      cartesian3: cesium.Cartesian3.fromDegrees(position[0],
-        position[1],
-        position[2] ? position[2] : 0)
-    }
     // 点的配置信息
-    // 点的配置信息
-    this.point = {
+    this.option = {
       position: this.position.cartesian3,
       id: this.id,
       point: {
@@ -38,37 +25,62 @@ export default class EPoint implements pointItem {
     };
     // 补充相关配置信息
     if (!attr) return;
-    attr.color ? this.point.point.color = cesium.Color.fromCssColorString(attr.color) : null;
-    attr.outlineColor ? this.point.point.outlineColor = cesium.Color.fromCssColorString(attr.outlineColor) : null;
-    attr.outlineWidth ? this.point.outlineWidth = attr.outlineWidth : null;
+    attr.color ? this.option.point.color = cesium.Color.fromCssColorString(attr.color) : null;
+    attr.outlineColor ? this.option.point.outlineColor = cesium.Color.fromCssColorString(attr.outlineColor) : null;
+    attr.outlineWidth ? this.option.outlineWidth = attr.outlineWidth : null;
   }
   /**
-   * 将点对象进行渲染
-   * @param entityCollection 用于管理点的entity集合
-   * @returns PointGraphics 返回新增的entity点
+   * 设置点的颜色
    */
-  addTo(entityCollection: cesium.EntityCollection) {
-    this.entityCollection = entityCollection;
-    this.point = entityCollection.add(this.point);
-    return this.point;
+  set color(color: string) {
+    if (this.entity && this.entity.point && this.entity.point.color) {
+      this.entity.point.color = cesium.Color.fromCssColorString(color);
+    }
   }
   /**
-   * 移除点对象的渲染
-   */
-  remove() {
-    this.entityCollection && this.entityCollection.remove(this.point);
+ * 获取点的颜色
+ */
+  get color() {
+    return this.entity ? this.entity.point.color.toCssColorString() : '';
   }
   /**
-   * 更新entity点的位置
-   * @param position 新的位置信息
+   * 设置点的外边线颜色
    */
-  updatePosition(position: number[]) {
-    // 修改缓存数据
-    this.position.input = position;
-    this.position.cartesian3 = cesium.Cartesian3.fromDegrees(position[0],
-      position[1],
-      position[2] ? position[2] : 0);
-    // 修改数据的位置
-    this.point.position = this.position.cartesian3;
+  set outlineColor(color: string) {
+    this.entity.point.outlineColor = cesium.Color.fromCssColorString(color);
+  }
+  /**
+   * 获取点的外边线颜色
+   */
+  get outlineColor() {
+    return this.entity && this.entity.point ? this.entity.point.outlineColor.toCssColorString() : '';
+  }
+  /**
+ * 设置点的外边线宽度
+ */
+  set outlineWidth(num: number) {
+    if (this.entity && this.entity.point) {
+      this.entity.point.outlineWidth = num;
+    }
+  }
+  /**
+   * 获取点的外边线宽度
+   */
+  get outlineWidth() {
+    return this.entity ? this.entity.point.outlineWidth : 1;
+  }
+  /**
+ * 设置点的大小
+ */
+  set pixelSize(num: number) {
+    if (this.entity && this.entity.point) {
+      this.entity.point.pixelSize = num;
+    }
+  }
+  /**
+  * 获取点的大小
+  */
+  get pixelSize() {
+    return this.entity ? this.entity.point.pixelSize : 1;
   }
 }
