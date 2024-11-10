@@ -20,7 +20,7 @@ export default class EPoint extends BaseEntity {
       id: this.id,
       point: {
         pixelSize: attr && attr.pixelSize ? attr.pixelSize : 1,
-        show: attr && attr.pixelSize ? attr.pixelSize : true,
+        show: attr && attr.show ? attr.show : true,
       },
     };
     // 补充相关配置信息

@@ -27,3 +27,33 @@ export type point = baseAttr & {
    */
   pixelSize?: number,
 }
+
+export type line = baseAttr & {
+  /**
+  * 颜色，默认值Color.WHITE
+  */
+  color?: string,
+  /**
+   * 外边框颜色，默认值Color.BLACK
+   */
+  width?: string,
+  /**
+   * 线的样式,直线、虚线、动态线...
+   */
+  type?: string
+}
+
+export type materialAttr = {
+  /**
+   * 材料颜色
+   */
+  color?: string,
+  /**
+   * 材料虚线间隔的长度
+   */
+  dashLength?: number,
+  /**
+   * 材料虚线间隔的颜色
+   */
+  gapColor?: number,
+}

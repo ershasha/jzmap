@@ -1,5 +1,6 @@
 import * as cesium from 'cesium';
 import { v4 } from 'uuid';
+import { materialAttr } from '../interface/entity/base'
 
 export function createPrimitiveCollection(name: string, primitives: cesium.PrimitiveCollection) {
     let collection;
@@ -67,6 +68,20 @@ export function createAppearance(
             });
     }
     return appearance;
+}
+export function createLineMaterial(type: string, options?: materialAttr) {
+    let material;
+    switch (type) {
+        case "color":
+            material = new cesium.PolylineMaterialAppearance();
+            break;
+        case 'dashed':
+            material = new cesium.PolylineDashMaterialProperty();
+            break;
+    }
+    if(!options) return material;
+    
+     return material;
 }
 
 export function createPrimitive(instance: cesium.GeometryInstance, appearance: cesium.Appearance) {
